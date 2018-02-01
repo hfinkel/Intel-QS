@@ -16,15 +16,22 @@
 
 HOST = $(shell hostname)
 
-CC = g++
-CC = CC -mkl -no-ipo
-CC = mpicxx
-CC = mpiicpc 
+#CC = g++
+#CC = CC -mkl -no-ipo
+#CC = mpicxx
+#CC = mpiicpc 
 
-OPTS = -g
-OPTS = -O3
-VECS = -qopt-report-phase=vec -qopt-report=2
-DEFS = -DUSE_MM_MALLOC -DSTANDALONE -DOPENQU_HAVE_MPI -DMKL_ILP64
+
+#OPTS = -g
+#OPTS = -O3
+#VECS = -qopt-report-phase=vec -qopt-report=2
+#DEFS = -DUSE_MM_MALLOC -DSTANDALONE -DOPENQU_HAVE_MPI -DMKL_ILP64
+
+CC = /soft/libraries/mpi/mpich-intel-3.1.4/bin/mpicxx  -mkl
+
+OPTS = -O3 -dynamic -mcmodel=large -lifcoremt
+VECS = -xMIC-AVX512
+DEFS = -DLINUX -DUSE_MM_MALLOC -DSTANDALONE -DOPENQU_HAVE_MPI -DMKL_ILP64
 
 CFLAGS = ${OPTS} ${DEFS} \
          -Wall -std=c++11 -qopenmp #-restrict \

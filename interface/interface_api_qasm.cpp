@@ -28,7 +28,7 @@ using namespace std;
 
 
 using Type = ComplexDP;
-extern QbitRegister<Type> *psi1;
+extern NoisyQureg<Type> *psi1;
 
 
 // Constant defining the rotational angle of a T-dagger gate. Basically, -(pi/4).
@@ -88,6 +88,11 @@ unsigned long H_handler(string args) {
     return 0;
 }
 
+unsigned long Noise_handler(string args){
+    cout << "Noise"<< " ["<< args << "] " << endl;
+    psi1->apply_noise_gates_on_all_qubits();
+    return 0;
+}
 
 unsigned long MeasZ_handler(string args) {
     using Type = ComplexDP;
@@ -122,6 +127,7 @@ unordered_map<string, function<long(string)>> qufun_table = {\
                                                 {"Tdag", Tdag_handler},
                                                 {"S", S_handler},
                                                 {"MeasZ", MeasZ_handler},
+						{"Noise", Noise_handler},
                                                 {"*", unk},
 };
 

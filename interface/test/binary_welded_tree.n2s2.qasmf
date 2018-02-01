@@ -46,6 +46,7 @@ H scratch1a
 Tdag scratch2a
 T a2
 T scratch1a
+Noise
 CNOT a2,scratch2a
 CNOT scratch2a,scratch1a
 Tdag scratch2a
