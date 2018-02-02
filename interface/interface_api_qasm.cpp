@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <functional>
 #include <stdexcept>
+#include <string.h>
+#include <sstream>
 
 #include "qureg/qureg.hpp"
 #include "interface_api_qubitid.h"
@@ -60,6 +62,23 @@ unsigned long T_handler(string args) {
     return 0;
 }
 
+unsigned long R_handler(string args){
+   stringstream ss(args);
+   string angle, trueargs, token;
+   int flg = 0;
+   while (getline(ss, token, ',')) {
+      if(flg == 0){
+         angle += token;
+         flg = 1;
+      }else{
+         trueargs += token + ",";
+      }
+   }
+   //cout << "atruargs: " << trueargs << " | angle: " << angle <<endl;
+   cout<< "R"<< " [" << args << "] " <<endl;
+   psi1->applyRotationZ(query_qubit_id(trueargs), stod(angle));
+   return 0;
+}
 
 unsigned long Tdag_handler(string args) {
     cout << "Tdag"<< " [" << args << "]" <<endl;
@@ -128,6 +147,7 @@ unordered_map<string, function<long(string)>> qufun_table = {\
                                                 {"S", S_handler},
                                                 {"MeasZ", MeasZ_handler},
 						{"Noise", Noise_handler},
+						{"R", R_handler},
                                                 {"*", unk},
 };
 
