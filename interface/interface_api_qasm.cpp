@@ -25,6 +25,36 @@
 #include "interface_api_version.h"
 #include "interface_api_memory.h"
 
+#if (defined(__ICC) || defined(__INTEL_COMPILER))
+#include <mkl.h>
+#if defined(OPENQU_HAVE_MPI)
+#include <mkl_cdft.h>
+#endif
+#endif
+
+template<typename Type>
+void qft(NoisyQureg<Type> *psi)
+{
+  int n = openqu::ilog2(psi->size());
+
+  // main computation
+  for (int i = n - 1; i >= 0; i--) {
+  	for (int j = n - 1; j > i; j--) {
+  		int k = j - i;
+		openqu::TinyMatrix<Type, 2, 2, 32> phaseshift;
+			phaseshift(0, 0) = {1, 0};
+			phaseshift(0, 1) = {0, 0};
+			phaseshift(1, 0) = {0, 0};
+			phaseshift(1, 1) = Type(cos(M_PI / D(UL(1) << UL(k))), sin(M_PI / D(UL(1) << UL(k))));
+			psi->applyControlled1QubitGate(j, i, phaseshift);
+	}
+	psi->applyHadamard(i);
+   }
+  // perform swapping
+  for (int i = 0; i < (n / 2); i++) {
+  	psi->applySwap(i, n - 1 - i);
+  }
+}
 
 using namespace std;
 
@@ -77,6 +107,13 @@ unsigned long R_handler(string args){
    //cout << "atruargs: " << trueargs << " | angle: " << angle <<endl;
    cout<< "R"<< " [" << args << "] " <<endl;
    psi1->applyRotationZ(query_qubit_id(trueargs), stod(angle));
+   return 0;
+}
+
+unsigned long QFT_handler(string args){
+   cout << "QFT " << " [" << args << "] " << endl;
+   using Type = ComplexDP;
+   qft<Type>(psi1);
    return 0;
 }
 
@@ -147,6 +184,7 @@ unordered_map<string, function<long(string)>> qufun_table = {\
                                                 {"S", S_handler},
                                                 {"MeasZ", MeasZ_handler},
 						{"Noise", Noise_handler},
+						{"QFT", QFT_handler},
 						{"R", R_handler},
                                                 {"*", unk},
 };
@@ -165,3 +203,5 @@ unsigned long ExecuteHandler(string op, string args) {
 
     return result;
 }
+
+
