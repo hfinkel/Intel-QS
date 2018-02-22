@@ -14,6 +14,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 #include <iostream>
+#include <sstream>
 #include <unordered_map>
 #include <functional>
 #include <stdexcept>
@@ -150,6 +151,8 @@ unsigned long Noise_handler(string args){
     return 0;
 }
 
+
+
 unsigned long MeasZ_handler(string args) {
     using Type = ComplexDP;
     Type measurement = 0.0;
@@ -167,12 +170,49 @@ unsigned long PrepZ_handler(string args) {
 }
 
 
+unsigned long Rx_handler(string args) {
+    int token_end = args.find_first_of(',');
+    stringstream agl(args.substr(0,token_end));
+    double r_theta = 0.0;
+    agl >> r_theta;
+    int qubit = query_qubit_id(args.substr(token_end+1,args.length()));
+    psi1->applyRotationX(qubit,r_theta);
+    cout << "Rx"<< " [" << args << "]" <<endl;
+    return 0;
+}
+
+unsigned long Ry_handler(string args) {
+    int token_end = args.find_first_of(',');
+    stringstream agl(args.substr(0,token_end));
+    double r_theta = 0.0;
+    agl >> r_theta;
+    int qubit = query_qubit_id(args.substr(token_end+1,args.length()));
+    psi1->applyRotationY(qubit,r_theta);
+    cout << "Ry"<< " [" << args << "]" <<endl;
+    return 0;
+}
+
+unsigned long Rz_handler(string args) {
+    int token_end = args.find_first_of(',');
+    stringstream agl(args.substr(0,token_end));
+    double r_theta = 0.0;
+    agl >> r_theta;
+    int qubit = query_qubit_id(args.substr(token_end+1,args.length()));
+    psi1->applyRotationZ(qubit,r_theta);
+    cout << "Rz"<< " [" << args << "]" <<endl;
+    return 0;
+}
+
+
+
 // Hash table containing the QASM operation string and the function to call to
 // handle the operation with the qHiPSTER simulation.
 //
 unordered_map<string, function<long(string)>> qufun_table = {\
                                                 {".malloc", qumalloc},
+						{"Allocate", qumalloc},
                                                 {".free", qufree},
+						{"Deallocate", qufree}
                                                 {".iversion",quiversion},
                                                 {".version",quversion},
                                                 {"H", H_handler},
@@ -183,6 +223,9 @@ unordered_map<string, function<long(string)>> qufun_table = {\
                                                 {"Tdag", Tdag_handler},
                                                 {"S", S_handler},
                                                 {"MeasZ", MeasZ_handler},
+                                                {"Rx", Rx_handler},
+                                                {"Ry", Ry_handler},
+                                                {"Rz", Rz_handler},
 						{"Noise", Noise_handler},
 						{"QFT", QFT_handler},
 						{"R", R_handler},

@@ -31,7 +31,9 @@ cbit EXIT3
 PrepZ r0
 PrepZ a0
 Noise Noise
-R 4.712388980385, a0, a1, a2 
+Rx 4.712388980385, a0
+Ry 4.712388980385, a0
+Rz 4.712388980385, a0
 QFT a0, a1
 X a0
 PrepZ b0
