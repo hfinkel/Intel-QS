@@ -86,7 +86,6 @@ unsigned long X_handler(string args) {
     return 0;
 }
 
-
 unsigned long T_handler(string args) {
     cout << "T"<< " [" << args << "]" <<endl;
     psi1->applyT(query_qubit_id(args));
@@ -124,7 +123,6 @@ unsigned long Tdag_handler(string args) {
     return 0;
 }
 
-
 unsigned long CNOT_handler(string args) {
     int qubit1,
         qubit2;
@@ -138,7 +136,6 @@ unsigned long CNOT_handler(string args) {
     return 0;
 }
 
-
 unsigned long H_handler(string args) {
     cout << "H"<< " [" << args << "]" <<endl;
     psi1->applyHadamard(query_qubit_id(args));
@@ -151,8 +148,6 @@ unsigned long Noise_handler(string args){
     return 0;
 }
 
-
-
 unsigned long MeasZ_handler(string args) {
     using Type = ComplexDP;
     Type measurement = 0.0;
@@ -163,12 +158,10 @@ unsigned long MeasZ_handler(string args) {
     return 0;
 }
 
-
 unsigned long PrepZ_handler(string args) {
     cout << "PrepZ"<< " [" << args << "]" <<endl;
     return 0;
 }
-
 
 unsigned long Rx_handler(string args) {
     int token_end = args.find_first_of(',');
@@ -212,7 +205,7 @@ unordered_map<string, function<long(string)>> qufun_table = {\
                                                 {".malloc", qumalloc},
 						{"Allocate", qumalloc},
                                                 {".free", qufree},
-						{"Deallocate", qufree}
+						{"Deallocate", qufree},
                                                 {".iversion",quiversion},
                                                 {".version",quversion},
                                                 {"H", H_handler},
